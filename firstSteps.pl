@@ -10,11 +10,19 @@ first(E, [E|_]).
 
 second(E, [_, E|_]).
 
+last1(H, [H]).
+last1(H, [_|T]) :- last1(H, T).
+
 member(E, [E| _]).
 member(E, [_|L]):-member(E, L).
 
 append([], X, X).
-append([H|T], L, [H|T1]):-append(T, L, T1).
+append([H|T], L, [H|T1]) :- append(T, L, T1).
+
+remove1(E, [E|T], T).
+remove1(E, [H|T], [H|L]) :- remove1(E, T, L).
+
+remove2(E, L, M) :- append(A, [E|T], L), append(A, T, M).
 
 sorted(L):-not((append(_, [E,F|_], L), not(E=<F))).
 
