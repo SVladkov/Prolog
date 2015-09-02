@@ -26,6 +26,13 @@ trans(L) :- not((member([A,B],L), member([B,C],L), not(member([A,C],L)))).
 
 mySubset(M, L) :- not((member(X, M), not(member(X, L)))).
 				 
+transposeMatrixHelp([], [], []).
+transposeMatrixHelp([[H|T]|M], [H|Lh], [T|Lt]) :- transposeMatrixHelp(M, Lh, Lt).
+				 
+%transposeMatrix(M, T).
+transposeMatrix([], []).
+transposeMatrix(M, [Lh|T]) :- transposeMatrixHelp(M, Lh, Lt), transposeMatrix(Lt, T).
+				 
 % generate(N, L) :- You are given N. Generate in L all lists of positive integers
 % sorted increasingly and with sum N
 
