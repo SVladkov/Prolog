@@ -8,6 +8,10 @@ myLast(H, [_|T]) :- myLast(H, T).
 member(E, [E| _]).
 member(E, [_|L]):-member(E, L).
 
+% myLength(L, N) :- "N is the length of L"
+myLength([], 0).
+myLength([H|T], N) :- myLength(T, B), N is B+1.
+
 myAppend([], X, X).
 myAppend([H|T], L, [H|T1]) :- myAppend(T, L, T1).
 
@@ -40,3 +44,12 @@ generate(N, L) :- between(1, N, M), help(M, N, L).
 
 help(M, N, [M, P|T]) :- S is N-M, between(M, N, P), help(P, S, [P|T]).
 help(M, M, [M]).
+
+% perm(L, P) :- "P are all permutations of L"
+perm([], []).
+perm([H|T], P) :- perm(T, Q),
+				  append(A, B, Q),
+				  append(A, [H|B], P).
+				  
+putNOnAllPossiblePlaces(L, N, R) :- append(A, B, L),
+								 append(A, [N|B], R).
