@@ -16,7 +16,7 @@ myAppend([], X, X).
 myAppend([H|T], L, [H|T1]) :- myAppend(T, L, T1).
 
 myRemove(E, [E|T], T).
-myRemove(E, [H|T], [H|L]) :- myRemove(E, T, L).
+myRemove(E, [_|T], [_|L]) :- myRemove(E, T, L).
 
 myRemove2(E, L, M) :- append(A, [E|T], L), append(A, T, M).
 
@@ -29,7 +29,11 @@ mySet(L) :- not((append(A, [H|T], L),
 trans(L) :- not((member([A,B],L), member([B,C],L), not(member([A,C],L)))).
 
 mySubset(M, L) :- not((member(X, M), not(member(X, L)))).
-				 
+		
+subsetGenerator([], []).
+subsetGenerator([H|L], [H|T]) :- subsetGenerator(L, T).
+subsetGenerator([_|L], T) :- subsetGenerator(L, T).
+		
 transposeMatrixHelp([], [], []).
 transposeMatrixHelp([[H|T]|M], [H|Lh], [T|Lt]) :- transposeMatrixHelp(M, Lh, Lt).
 				 
@@ -42,7 +46,7 @@ transposeMatrix(M, [Lh|T]) :- transposeMatrixHelp(M, Lh, Lt), transposeMatrix(Lt
 
 generate(N, L) :- between(1, N, M), help(M, N, L).
 
-help(M, N, [M, P|T]) :- S is N-M, between(M, N, P), help(P, S, [P|T]).
+help(M, N, [M| T]) :- S is N-M, between(M, N, P), help(P, S, T).
 help(M, M, [M]).
 
 % perm(L, P) :- "P are all permutations of L"
@@ -53,3 +57,6 @@ perm([H|T], P) :- perm(T, Q),
 				  
 putNOnAllPossiblePlaces(L, N, R) :- append(A, B, L),
 								 append(A, [N|B], R).
+								 
+myReverse([], []).
+myReverse([H|T], R) :- myReverse(T, R2), myAppend(R2, [H], R).
