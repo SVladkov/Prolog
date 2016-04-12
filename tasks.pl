@@ -40,3 +40,16 @@ subList(List, Subl) :- append([_, Subl, _], List).
 
 gen(X) :- between(0, 5, X).
 genL(X) :- append([1, 2| X], [6, 7], [1, 2, 3, 4, 5, 6, 7]).
+
+% X is list of lists of numbers. Write a predicate that tells if two of the elements of some element of X are equal to 5
+twoSubelementsAreEqualToFive(X) :- member(L, X), append(_, [A|Q], L), member(B, Q), A=5, B=5.
+
+% X is list of lists of numbers. Write a predicate that tells if every two elements of X have at least 3 different common elements
+eachTwoElementsThreeCommon(L) :- not((append(_, [X|Q], L), member(Y, Q),
+									not((
+										member(A, X), member(A, Y),
+										member(B, X), member(B, Y),
+										member(C, X), member(C, Y),
+										not(A=B), not(A=C), not(B=C)
+									))
+								 )).
