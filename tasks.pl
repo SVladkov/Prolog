@@ -118,3 +118,54 @@ generateSublists(X, Y, P) :- sublist(Y, P),
 							
 corresponding([A|X], [B|P]) :- A=<B, corresponding(X, P).
 corresponding([], []).
+
+% !!! You cannot reassign variables in prolog
+
+% You are given a list X. Generate in Y all lists, that are subsets of X and the count of the most frequent element of Y is a number,
+% that is not element of X
+gen(X, Y) :-
+	subsetGen(X, Y),
+	mostFrequentElementCount(Y, C),
+	not(member(C, X)).
+
+mostFrequentElementCount(L, Count) :- mostFrequentElementHelp(L, L, Count).
+
+mostFrequentElementHelp(Original, [Element|L], Count) :- 
+	mostFrequentElementHelp(Original, L, C1),
+	countOccurances(Original, Element, C2),
+	((C1 =< C2, Count is C2);
+	(C1 > C2, Count is C1)).
+	
+mostFrequentElementHelp(_, [], 0).
+	
+countOccurances([H|L], Element, Count) :-
+	H =:= Element,
+	countOccurances(L, Element, Count1),
+	Count is Count1 + 1.
+
+countOccurances([H|L], Element, Count) :-
+	not(H =:= Element),
+	countOccurances(L, Element, Count1),
+	Count is Count1.
+
+countOccurances([], _, 0).
+
+myMerge(L, [H|L1], [H|R]) :- myMerge(L, L1, R).
+myMerge([H|L], L1, [H|R]) :- myMerge(L, L1, R).
+myMerge([], [], []).
+
+% Transpose a matrix
+transp([[]|_], []).
+transp(M, [FirstColumn|TransposedRest]) :- getHeadsBodies(M, FirstColumn, Rest), transp(Rest, TransposedRest).
+
+getHeadsBodies([],[],[]).
+getHeadsBodies([[H|FirstRow]|Rest], [H|RestHeads], [FirstRow|RestBodies]) :- getHeadsBodies(Rest, RestHeads, RestBodies).
+
+transpHelp([],[],[]).
+transpHelp(M, Heads, Bodies) :- getHeads(M, Heads), getBodies(M, Bodies).
+
+getHeads([[H|FirstRow]|Rest], [H|RestHeads]) :- getHeads(Rest, RestHeads).
+getHeads(_,[]).
+
+getBodies([[H|FirstRow]|Rest], [FirstRow|RestBodies]) :- getBodies(Rest, RestBodies).
+getBodies(_,[]).
