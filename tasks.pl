@@ -54,13 +54,24 @@ eachTwoElementsThreeCommon(L) :- not((append(_, [X|Q], L), member(Y, Q),
 									))
 								 )).
 								 
-% X is list of lists of numbers. Write a predicate that tells if each two elements of X have common element that is not part of some other element of X
+% X is list of lists of numbers. Write a predicate that tells if each two elements of X have common element that is not part of !!SOME!! other element of X
 eachTwoElementsTwoUnique(L) :- not((member(A, L), member(B, L),
 									not((member(X, A), member(X, B), member(C, L),
-										not(member(X, C))
+										not((member(X, C)))
 									))
 							   )).
-							   
+
+% X is list of lists of numbers. Write a predicate that tells if each two elements of X have common element that is not part of !!ANY!! other element of X							   
+eachTwoElemen(L) :- not((member(X, L), member(Y, L), X\=Y,
+									not((member(E, X), member(E, Y),
+										not((
+											member(Z, L),
+											Z\=X, Z\=Y,
+											member(E, Z)
+										))
+									))
+							   )).						   
+
 % take two different elements of L
 takeTwo(L, A, B) :- append(_, [A|Q], L), member(B, Q).
 
@@ -73,14 +84,18 @@ consecutive(L, A, B) :- append(_, [A, B|_], L).
 isSorted(L) :- not((consecutive(L, A, B), A>B)).
 
 % take one element out of the list
-out(L, E, R) :- append(A, [E|B], L), append(A, B, R).
+out(L, E, R) :- member(E, L), append(A, [E|B], L), append(A, B, R).
 
 perm(L, [E|Q]) :- out(L, E, R), perm(R, Q).
 perm([], []).
 
-subsetGen(L, [E|R]) :- out(L, E, Q), subsetGen(Q, R).
-subsetGen(L, R) :- out(L, E, Q), subsetGen(Q, R).
-subsetGen([],[]).
+%subsetGen(L, [X|Q]) :- out(L, X, R), subsetGen(R, Q). % removes random element from L, 
+%subsetGen(L, Q) :- out(L, X, R), subsetGen(R, Q).
+%subsetGen([],[]).
+
+subsetGen([], []).
+subsetGen([H|L], T) :- subsetGen(L, T).
+subsetGen([H|L], [H|T]) :- subsetGen(L, T).
 
 % Write quick sort
 % !!! =<
@@ -169,3 +184,27 @@ getHeads(_,[]).
 
 getBodies([[H|FirstRow]|Rest], [FirstRow|RestBodies]) :- getBodies(Rest, RestBodies).
 getBodies(_,[]).
+	
+% generate all terms f, #(f) = 2
+iterate(D, f(A, B)) :- D1 is D-1, 
+	between(0, D1, X), 
+	between(0, D1, Y),
+	(X=D1; Y=D1),
+	iterate(X, A), 
+	iterate(Y, B).
+iterate(0, c).
+
+between(A, B, X) :- A1 is A+1, A1 =< B, between(A1, B, X).
+between(A, B, A) :- A=<B.
+
+awkwardMember(E, L) :- append(A, [E|B], L).
+
+% permutation
+putHead(H, Q, P) :- append(A, B, Q),
+					 append(A, [H|B], P).
+			
+myPerm([], []).			
+myPerm([H|T], P) :- myPerm(T, Q), 
+				putHead(H, Q, P).
+				%append(A, B, Q), 
+				%append(A, [H|B], P).
